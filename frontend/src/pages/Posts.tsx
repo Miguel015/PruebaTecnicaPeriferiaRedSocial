@@ -281,19 +281,7 @@ const Posts: React.FC = () => {
 
       {token ? (
         <>
-          {/* dev: cleanup orphan posts button */}
-          {import.meta.env.DEV ? (
-            <div className="mb-4">
-              <button className="btn-muted" onClick={async () => {
-                try {
-                  await fetcher('/posts/cleanup-orphans', { method: 'DELETE' })
-                  setActionMsg('Orphan posts cleaned')
-                  setPage(0)
-                  await load(0, true)
-                } catch (e: any) { setActionMsg('Cleanup failed: ' + (e?.message || e)) }
-              }}>Limpiar posts huérfanos (dev)</button>
-            </div>
-          ) : null}
+          {/* Nota: el botón de limpieza de posts huérfanos se eliminó en la entrega final */}
           {/* Floating create button */}
           <button
             aria-label="Crear post"
@@ -444,7 +432,7 @@ const Posts: React.FC = () => {
                             <path fill="none" stroke="currentColor" strokeWidth="1.5" d="M12.1 21s-6.7-4.6-9.2-7.1C-0.4 10.7 1.1 6.5 4.8 5.2 7 4.4 9.1 5 10 6.2 10.9 5 12.9 4.4 15.2 5.2c3.7 1.3 5.2 5.5 2 8.7-2.5 2.4-9.1 6.9-9.1 6.9z" />
                           )}
                         </svg>
-                        <span className="muted text-sm ml-2" style={{minWidth:40,display:'inline-block',textAlign:'right'}}>{p.totalLikes}</span>
+                        <span className="muted text-sm ml-1" style={{marginLeft:6}}>{p.totalLikes}</span>
                       </button>
                     </div>
                     <div className="muted text-sm">{new Date(p.createdAt).toLocaleTimeString()}</div>

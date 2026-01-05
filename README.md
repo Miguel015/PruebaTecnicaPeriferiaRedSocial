@@ -73,7 +73,7 @@ Endpoints principales (rápido)
 - Crear post: `POST /posts` — body JSON { content } o FormData con `images`.
 - Like: `POST /posts/:id/like` — token requerido.
 - Perfil: `GET /users/me` o `GET /users/:id` — token requerido.
-- Cleanup huérfanos (dev): `DELETE /posts/cleanup-orphans` — token requerido.
+<!-- Se eliminó el endpoint de limpieza de posts huérfanos de la documentación final. -->
 
 Pruebas
 - Backend unit + E2E API (Jest/ts-jest):
@@ -126,16 +126,17 @@ Notas de implementación y decisiones
 - El frontend usa React + Context (`frontend/src/context/AuthContext.tsx`) para manejar sesión; `frontend/src/pages/Posts.tsx` contiene lógica de representación, previews locales y manejo de likes.
 - Tests: incluí unit tests backend y frontend, además de un test E2E API y un test Playwright de ejemplo para UI.
 
-Buenas prácticas y recomendaciones
-- Añadir CI (GitHub Actions) que ejecute: `npm test` (backend) y `cd frontend && npm test` (frontend), y opcionalmente tests E2E en un job separado con servicios dockerizados.
-- Añadir cobertura de tests y generar badge.
-- Validar errores y respuestas del API con DTOs y excepciones (NestJS) — ya se usan DTOs en `src/posts/dto`.
-- Documentar Swagger: si no está activado, exponer Swagger en `/api` añadiendo `SwaggerModule` en `main.ts`.
+-
+Entrega y notas finales
+- Este documento contiene la información mínima necesaria para ejecutar y verificar la aplicación (endpoints, usuarios de prueba, comandos para tests y ejecución local).
+- Se han eliminado las recomendaciones y sugerencias adicionales para mantener la documentación enfocada en la entrega.
 
-¿Qué más incluir en el README?
-- Puedo añadir ejemplos curl más detallados por endpoint, un diagrama de arquitectura simple, y pasos concretos para configurar CI. ¿Quieres que lo añada ahora? 
+Usuarios de prueba (seeded)
+- Username: `alice` / Password: `password1`
+- Username: `bob` / Password: `password2`
+- Username: `carla` / Password: `password3`
+- Username: `dan` / Password: `password4`
 
----
 Archivos modificados/añadidos por mí recientemente:
 - `frontend/vitest.config.ts`, `frontend/vitest.setup.ts` (config tests)
 - `frontend/src/pages/Posts.extra.test.tsx`, `frontend/src/pages/Posts.test.tsx` (tests)
