@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '../app.module'
+import { SeederService } from '../seed/seeder.service'
 
 describe('Posts E2E', () => {
   let app: INestApplication
@@ -13,6 +14,9 @@ describe('Posts E2E', () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile()
     app = moduleRef.createNestApplication()
     await app.init()
+    // ensure seeded users/posts are present for the E2E flow
+    const seeder = app.get(SeederService)
+    await seeder.seed()
   }, 20000)
 
   afterAll(async () => {

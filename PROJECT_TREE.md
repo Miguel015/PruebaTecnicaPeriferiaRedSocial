@@ -1,0 +1,102 @@
+# Project Tree
+
+Below is the full project structure for this repository.
+
+- DEPLOY_CHECKLIST.md
+- Dockerfile
+- docker-compose.yml
+- .env.example
+- .gitignore
+- DEPLOY_CHECKLIST.md
+- README.md
+- jest.config.ts
+- package.json
+- package-lock.json
+- token.json
+- tsconfig.json
+- tsconfig.build.json
+- wait-for-postgres.js
+- tmp_cleanup.js
+- tmp_clear_posts.js
+- tmp_frontend_bundle.js
+- tmp_frontend_index.html
+- tmp_get_posts.js
+
+- docs/
+  - INSTALLATION.md
+  - entrega_instalacion.pdf
+
+- scripts/
+  - init_users.sql
+  - record_demo.ps1
+
+- .github/
+  - workflows/ci.yml
+
+- src/
+  - app.module.ts
+  - main.ts
+  - config/
+    - configuration.ts
+  - common/
+    - jwt.constants.ts
+    - filters/
+      - http-exception.filter.ts
+  - auth/
+    - auth.controller.ts
+    - auth.module.ts
+    - auth.service.ts
+    - auth.service.spec.ts
+    - jwt-auth.guard.ts
+    - jwt.strategy.ts
+  - users/
+    - user.entity.ts
+    - users.controller.ts
+    - users.module.ts
+    - users.service.ts
+    - users.service.spec.ts
+  - posts/
+    - post.entity.ts
+    - like.entity.ts
+    - posts.controller.ts
+    - posts.module.ts
+    - posts.service.ts
+    - posts.service.spec.ts
+    - dto/
+      - create-post.dto.ts
+  - e2e/
+    - posts.e2e.spec.ts
+    - posts.e2e-spec.ts
+  - seed/
+    - seeder.service.ts
+
+- frontend/
+  - Dockerfile
+  - index.html
+  - package.json
+  - package-lock.json
+  - playwright.config.ts
+  - postcss.config.cjs
+  - tailwind.config.cjs
+  - tsconfig.json
+  - vite.config.ts
+  - vitest.config.ts
+  - vitest.setup.ts
+  - public/
+    - assets/
+      - periferia.png
+  - tests/
+    - e2e.ui.spec.ts
+  - src/
+    - main.tsx
+    - styles.css
+    - api/
+      - client.ts
+    - context/
+      - AuthContext.tsx
+    - pages/
+      - Login.tsx
+      - Posts.tsx
+      - Posts.test.tsx
+      - Posts.extra.test.tsx
+      - Profile.tsx
