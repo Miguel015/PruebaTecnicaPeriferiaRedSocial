@@ -6,6 +6,7 @@
     "start": "node dist/main.js",
     "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "build": "tsc -p tsconfig.build.json",
+    "docs:pdf": "npx markdown-pdf docs/INSTALLATION.md -o docs/entrega_instalacion.pdf",
     "start:prod": "node dist/main.js",
     "test": "jest --runInBand"
   },

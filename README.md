@@ -4,6 +4,13 @@ Resumen rápido
 - Proyecto de ejemplo que implementa una red social mínima con autenticación JWT, servicio de publicaciones, likes y perfil de usuario.
 - Stack: NestJS (backend), TypeORM + Postgres (DB, con fallback sqlite en dev), React + Vite + Tailwind (frontend), Jest/Vitest (tests), Playwright (E2E UI).
 
+Entregables
+- `docs/INSTALLATION.md` y `docs/entrega_instalacion.pdf` (guía de instalación y entrega)
+- `scripts/init_users.sql` (script SQL para usuarios predefinidos)
+- `scripts/record_demo.ps1` (script para grabar demo con `ffmpeg` en Windows)
+- Repositorio en GitHub con backend y frontend, y `docker-compose.yml` para levantar servicios
+
+
 Estado actual
 - Backend: endpoints de autenticación, posts, users; seeder para usuarios/posts al bootstrap; pruebas unitarias y E2E API.
 - Frontend: pantallas de Login, Posts y Profile; mejoras UX (header hide-on-scroll, evitar salto al dar like); pruebas unitarias con Vitest y tests Playwright preparados.
