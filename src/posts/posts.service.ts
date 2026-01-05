@@ -3,6 +3,7 @@ import { unlinkSync, readdirSync, statSync } from 'fs'
 import { join } from 'path'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../users/user.entity';
 import { Post } from './post.entity';
 import { Like } from './like.entity';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -14,6 +15,9 @@ export class PostsService {
     private readonly postsRepo: Repository<Post>,
     @InjectRepository(Like)
     private readonly likesRepo: Repository<Like>
+    ,
+    @InjectRepository(User)
+    private readonly usersRepo: Repository<User>
   ) {}
   async create(author: any, dto: CreatePostDto, files?: Express.Multer.File[]) {
     const images = files && files.length > 0 ? files.map(f => `/uploads/${f.filename}`) : null
@@ -38,7 +42,13 @@ export class PostsService {
       }
       let imgs: string[] | null = null
       try { imgs = p.images ? JSON.parse(p.images as any) : null } catch { imgs = null }
-      return { ...p, totalLikes, liked, images: imgs };
+      // attempt to resolve author username for frontend display
+      let authorUsername: string | null = null
+      try {
+        const author = await (this as any).usersRepo?.findOne({ where: { id: p.authorId } });
+        if (author) authorUsername = author.username || null
+      } catch {}
+      return { ...p, totalLikes, liked, images: imgs, authorUsername };
     }));
     return { items: results, total };
   }
@@ -49,7 +59,13 @@ export class PostsService {
     const totalLikes = await this.likesRepo.count({ where: { postId: id } });
     let imgs: string[] | null = null
     try { imgs = post.images ? JSON.parse(post.images as any) : null } catch { imgs = null }
-    return { ...post, totalLikes, images: imgs };
+    // include author username
+    let authorUsername: string | null = null
+    try {
+      const author = await (this as any).usersRepo?.findOne({ where: { id: post.authorId } });
+      if (author) authorUsername = author.username || null
+    } catch {}
+    return { ...post, totalLikes, images: imgs, authorUsername };
   }
 
   async like(postId: string, user: any) {
@@ -96,5 +112,36 @@ export class PostsService {
     try { await this.likesRepo.clear() } catch {}
     try { await this.postsRepo.clear() } catch {}
     return { deleted: true }
+  }
+
+  // remove posts whose author no longer exists
+  async cleanupOrphans() {
+    const posts = await this.postsRepo.find();
+    let removed = 0;
+    for (const p of posts) {
+      try {
+        const author = await this.usersRepo.findOne({ where: { id: p.authorId } });
+        if (!author) {
+          // remove likes for this post
+          try { await this.likesRepo.delete({ postId: p.id }) } catch {}
+          // remove uploads if any
+          try {
+            if (p.images) {
+              const imgs = JSON.parse(p.images as any) as string[]
+              for (const img of imgs) {
+                try {
+                  const filename = img.replace('/uploads/', '')
+                  const fp = join(process.cwd(), 'uploads', filename)
+                  try { unlinkSync(fp) } catch {}
+                } catch {}
+              }
+            }
+          } catch {}
+          try { await this.postsRepo.delete({ id: p.id }) } catch {}
+          removed++;
+        }
+      } catch {}
+    }
+    return { removed };
   }
 }

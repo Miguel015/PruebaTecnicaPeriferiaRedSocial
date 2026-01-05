@@ -2,6 +2,21 @@ import React, { useEffect, useState, useContext } from 'react'
 import { useApi, resolveAssetUrl } from '../api/client'
 import { AuthContext } from '../context/AuthContext'
 
+/*
+  Posts.tsx
+  - Component: lists posts, allows creating posts with multiple images, liking, and infinite scroll.
+  - Client-side behaviors documented here:
+    - Local previews for created posts are stored in `postImages:<postId>` and `postAuthor:<postId>`
+    - Local profile avatar previews are stored in `profileImage:<userId>`
+    - Asset URLs returned by the backend are normalized with `resolveAssetUrl()` before rendering
+    - Per-post carousel index is tracked in component state `carouselIndex` keyed by post id
+  - Test mapping (quick):
+    - Login UI changes: handled in `frontend/src/pages/Login.tsx`
+    - Header hidden on login: handled in `frontend/src/main.tsx`
+    - Posts/Profile images sync: uses localStorage keys above and dispatches `posts:updated` / `profile:updated` events
+    - Modal/swiper for posts: implemented here with per-post carousel and navigation controls
+*/
+
 const Posts: React.FC = () => {
   const { fetcher } = useApi()
   const { token, user } = useContext(AuthContext)
@@ -169,7 +184,7 @@ const Posts: React.FC = () => {
       setPosts(curr => curr.map(p => p.id === id ? { ...p, totalLikes: res.totalLikes, liked: !!res.liked } : p))
       setLikedMap(curr => ({ ...curr, [id]: !!res.liked }))
       setActionMsg(res.liked ? 'Liked' : 'Unliked')
-      try { window.dispatchEvent(new CustomEvent('posts:updated')) } catch {}
+      // avoid triggering a global reload (prevents scroll jump)
     } catch (err: any) {
       setError(err.message || 'Error liking post')
     } finally {
@@ -239,6 +254,7 @@ const Posts: React.FC = () => {
 
   return (
     <div className="container-max mx-auto">
+      <style>{`@keyframes postEnter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}} .post-card:not([aria-busy]){animation:postEnter .32s ease both}`}</style>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-semibold">Posts</h2>
         {actionMsg && <div className="msg-success">{actionMsg}</div>}
@@ -265,7 +281,19 @@ const Posts: React.FC = () => {
 
       {token ? (
         <>
-          <div className="muted mb-4">Puedes crear un post desde el botón flotante.</div>
+          {/* dev: cleanup orphan posts button */}
+          {import.meta.env.DEV ? (
+            <div className="mb-4">
+              <button className="btn-muted" onClick={async () => {
+                try {
+                  await fetcher('/posts/cleanup-orphans', { method: 'DELETE' })
+                  setActionMsg('Orphan posts cleaned')
+                  setPage(0)
+                  await load(0, true)
+                } catch (e: any) { setActionMsg('Cleanup failed: ' + (e?.message || e)) }
+              }}>Limpiar posts huérfanos (dev)</button>
+            </div>
+          ) : null}
           {/* Floating create button */}
           <button
             aria-label="Crear post"
@@ -291,7 +319,7 @@ const Posts: React.FC = () => {
                 </div>
                 <form onSubmit={create}>
                   <label className="block text-sm text-slate-600 mb-2">Contenido</label>
-                  <textarea className="w-full border rounded-md px-3 py-2 mb-3" value={content} onChange={e => setContent(e.target.value)} />
+                  <textarea autoFocus className="w-full border rounded-md px-3 py-2 mb-3" value={content} onChange={e => setContent(e.target.value)} />
                   <div className="mb-3">
                     <label className="block text-sm text-slate-600 mb-1">Imágenes (opcional, puedes seleccionar varias)</label>
                     <div className="flex items-center gap-3">
@@ -403,6 +431,7 @@ const Posts: React.FC = () => {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <button
+                        onMouseDown={(e) => e.preventDefault()}
                         onClick={() => toggleLike(p.id)}
                         disabled={likingId===p.id}
                         aria-pressed={isLiked}
@@ -415,7 +444,7 @@ const Posts: React.FC = () => {
                             <path fill="none" stroke="currentColor" strokeWidth="1.5" d="M12.1 21s-6.7-4.6-9.2-7.1C-0.4 10.7 1.1 6.5 4.8 5.2 7 4.4 9.1 5 10 6.2 10.9 5 12.9 4.4 15.2 5.2c3.7 1.3 5.2 5.5 2 8.7-2.5 2.4-9.1 6.9-9.1 6.9z" />
                           )}
                         </svg>
-                        <span className="muted text-sm ml-2">{p.totalLikes}</span>
+                        <span className="muted text-sm ml-2" style={{minWidth:40,display:'inline-block',textAlign:'right'}}>{p.totalLikes}</span>
                       </button>
                     </div>
                     <div className="muted text-sm">{new Date(p.createdAt).toLocaleTimeString()}</div>

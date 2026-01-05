@@ -13,7 +13,7 @@ function App() {
       <BrowserRouter>
         <div className="app-bg min-h-screen">
             <Header />
-          <main>
+          <main className="pt-20">
             <AuthRoutes />
           </main>
         </div>
@@ -60,8 +60,33 @@ const Header: React.FC = () => {
   // hide full header when showing login (explicit /login or unauthenticated root)
   if (!token && (location.pathname === '/' || location.pathname.startsWith('/login'))) return null
 
+  const [visible, setVisible] = React.useState(true)
+  React.useEffect(() => {
+    let lastY = window.scrollY
+    let ticking = false
+    const onScroll = () => {
+      const y = window.scrollY
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (y > lastY && y > 60) {
+            // scrolling down
+            setVisible(false)
+          } else {
+            // scrolling up
+            setVisible(true)
+          }
+          lastY = y
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
-    <header className="bg-white shadow-sm">
+    <header className={`bg-white shadow-sm fixed top-0 left-0 w-full z-40 transform transition-transform duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="container-max mx-auto px-4 py-4 flex items-center justify-between">
         <h1 className="text-lg font-semibold">Periferia Demo</h1>
         <Nav />

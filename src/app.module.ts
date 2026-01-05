@@ -14,7 +14,10 @@ import { User } from './users/user.entity';
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
-      serveRoot: '/uploads'
+      serveRoot: '/uploads',
+      serveStaticOptions: {
+        index: false
+      }
     }),
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     TypeOrmModule.forRootAsync({

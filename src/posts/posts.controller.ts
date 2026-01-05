@@ -60,4 +60,12 @@ export class PostsController {
   async like(@Param('id') id: string, @Req() req: any) {
     return this.postsService.like(id, req.user);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Delete('cleanup-orphans')
+  @ApiOperation({ summary: 'Delete posts whose author no longer exists (dev)' })
+  async cleanupOrphans() {
+    return this.postsService.cleanupOrphans();
+  }
 }
