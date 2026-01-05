@@ -143,45 +143,50 @@ Archivos modificados/añadidos por mí recientemente:
 - `frontend/playwright.config.ts`, `frontend/tests/e2e.ui.spec.ts` (Playwright)
 - `src/e2e/posts.e2e.spec.ts` (E2E API)
 
-# Auth microservice (NestJS + TypeORM + PostgreSQL + JWT)
+# Servicio de autenticación (Auth)
 
-Endpoints:
+Endpoints principales
 
-- GET /auth/login?username=&password=  -> returns { access_token }
-- GET /users/me  (protected) -> returns user profile without passwordHash
+- `GET /auth/login?username=<user>&password=<pw>` → devuelve `{ "access_token": "..." }`.
+- `GET /users/me` (protegido) → devuelve el perfil del usuario (sin `passwordHash`).
 
-Environment: copy `.env.example` to `.env` and set DB and JWT values.
+Entorno
 
-Run locally:
+- Copiar `.env.example` a `.env` y ajustar las variables de conexión a la base de datos y `JWT_SECRET`.
+
+Ejecución local
 
 ```bash
 npm install
 npm run start:dev
 ```
 
-Run with Docker Compose (backend, DB, and frontend):
+Ejecución con Docker Compose (backend, DB y frontend)
 
 ```bash
 docker compose up --build
 ```
 
-Frontend will be available at: http://localhost:5173
+La aplicación frontend estará disponible en: http://localhost:5173
 
-Seeded credentials created by the seeder:
+Credenciales de prueba (seeded)
 
-- Username: `alice` / Password: `password1`
-- Username: `bob` / Password: `password2`
+- `alice` / `password1`
+- `bob` / `password2`
+- `carla` / `password3`
+- `dan` / `password4`
 
-API endpoints: `http://localhost:3000`
-Frontend configuration:
+API base: http://localhost:3000
 
-- The frontend reads the API base URL from `VITE_API_URL` at build time. The docker-compose sets it to `http://app:3000` so the nginx-served static build talks to the backend service.
+Configuración del frontend
 
-Basic UI flow to validate after bringing up the stack:
+- El frontend lee la variable `VITE_API_URL` en tiempo de build; en `docker-compose` se establece `http://app:3000` para que la build estática hable con el servicio backend.
 
-1. Open http://localhost:5173
-2. Go to Login and enter `alice` / `password1` (or `bob` / `password2`).
-3. After login you should see posts. Create a post and toggle Like/Unlike.
-4. Visit Profile to view `/users/me` data.
+Flujo UI básico para validar
 
-If the token expires or you receive 401, the app will auto logout and redirect to Login.
+1. Abrir http://localhost:5173
+2. Iniciar sesión con `alice` / `password1` (o `bob` / `password2`).
+3. Ver publicaciones, crear una publicación y alternar like/unlike.
+4. Ver perfil en `/users/me`.
+
+Nota: si el token expira o se recibe un `401`, la aplicación realiza logout automático y redirige a la pantalla de Login.
