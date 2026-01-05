@@ -4,9 +4,9 @@ services:
     image: postgres:15-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: socialdb
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:-postgres}
+      POSTGRES_DB: ${DB_NAME:-socialdb}
     ports:
       - '5432:5432'
     volumes:
@@ -34,7 +34,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_URL=http://localhost:3000
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:3000}
     restart: unless-stopped
     ports:
       - '5173:80'

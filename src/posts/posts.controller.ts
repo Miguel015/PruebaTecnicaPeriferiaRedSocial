@@ -16,6 +16,8 @@ export class PostsController {
   @ApiBearerAuth()
   @Get()
   @ApiOperation({ summary: 'List posts' })
+  @ApiResponse({ status: 200, description: 'List of posts with pagination' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async list(@Req() req: any, @Query('page') page?: string, @Query('size') size?: string) {
     const p = Number(page ?? 0)
     const s = Number(size ?? 5)
@@ -26,6 +28,8 @@ export class PostsController {
   @ApiBearerAuth()
   @Get(':id')
   @ApiOperation({ summary: 'Get post by id' })
+  @ApiResponse({ status: 200, description: 'Post detail' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
   async get(@Param('id') id: string) {
     return this.postsService.findById(id);
   }
@@ -40,6 +44,8 @@ export class PostsController {
     })
   }))
   @ApiOperation({ summary: 'Create a post' })
+  @ApiResponse({ status: 201, description: 'Post created' })
+  @ApiResponse({ status: 400, description: 'Validation error' })
   async create(@Req() req: any, @Body() dto: CreatePostDto, @UploadedFiles() files?: Express.Multer.File[]) {
     return this.postsService.create(req.user, dto, files);
   }
@@ -57,6 +63,8 @@ export class PostsController {
   @HttpPost(':id/like')
   @HttpCode(200)
   @ApiOperation({ summary: 'Like or unlike a post (toggle)' })
+  @ApiResponse({ status: 200, description: 'Returns liked state and totalLikes' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
   async like(@Param('id') id: string, @Req() req: any) {
     return this.postsService.like(id, req.user);
   }

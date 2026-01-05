@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { SeederService } from './seed/seeder.service';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -32,6 +33,9 @@ async function bootstrap() {
   // Run seeder
   const seeder = app.get(SeederService);
   await seeder.seed();
+
+  // Register global exception filter to standardize error responses
+  app.useGlobalFilters(new HttpExceptionFilter())
 
   await app.listen(port);
   Logger.log(`Auth microservice running on http://localhost:${port}`);

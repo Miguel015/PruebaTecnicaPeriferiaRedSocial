@@ -115,6 +115,7 @@ const Posts: React.FC = () => {
     e.preventDefault()
     setCreating(true)
     setActionMsg(null)
+    setError(null)
     try {
       const currentContent = content
       let created: any = null
@@ -178,6 +179,7 @@ const Posts: React.FC = () => {
   const toggleLike = async (id: string) => {
     setLikingId(id)
     setActionMsg(null)
+    setError(null)
     try {
       const res: any = await fetcher(`/posts/${id}/like`, { method: 'POST' })
       // update local post like counts and local liked map
@@ -225,6 +227,7 @@ const Posts: React.FC = () => {
     // append a skeleton placeholder item
     setPosts(curr => [...curr, { id: placeholderId, __placeholder: true } as any])
     setLoadingMore(true)
+    setError(null)
     try {
       await load(next, false)
       setPage(next)

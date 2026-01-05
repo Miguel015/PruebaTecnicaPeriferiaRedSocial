@@ -12,18 +12,36 @@ export const useApi = () => {
     if (!(opts.body instanceof FormData)) headers['Content-Type'] = 'application/json'
     if (token) headers['Authorization'] = `Bearer ${token}`
     const res = await fetch(apiUrl + path, { ...opts, headers })
+    // handle unauthorized centrally
     if (res.status === 401) {
-      // token expired / unauthorized — force logout
       setToken(null)
       throw new Error('Unauthorized')
     }
-    if (!res.ok) throw new Error((await res.text()) || res.statusText)
-    const text = await res.text()
-    try {
-      return text ? JSON.parse(text) : null
-    } catch {
-      return text
+
+    const raw = await res.text()
+    // try to parse JSON body when present
+    let parsed: any = null
+    try { parsed = raw ? JSON.parse(raw) : null } catch { parsed = null }
+
+    if (!res.ok) {
+      // prefer common NestJS error shapes
+      let msg: string = res.statusText || 'Error'
+      if (parsed) {
+        if (typeof parsed === 'string') msg = parsed
+        else if (parsed.message) {
+          if (Array.isArray(parsed.message)) msg = parsed.message.join('; ')
+          else msg = String(parsed.message)
+        } else if (parsed.error) msg = String(parsed.error)
+        else msg = JSON.stringify(parsed)
+      } else if (raw) {
+        msg = raw
+      }
+      throw new Error(msg)
     }
+
+    // successful response: return parsed JSON or raw text
+    if (parsed !== null) return parsed
+    return raw || null
   }
 
   return { fetcher }
