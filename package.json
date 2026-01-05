@@ -1,0 +1,43 @@
+{
+  "name": "auth-microservice",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node dist/main.js",
+    "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start:prod": "node dist/main.js"
+  },
+  "dependencies": {
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.2.0",
+    "@nestjs/core": "^9.0.0",
+    "@nestjs/jwt": "^9.0.0",
+    "@nestjs/passport": "^9.0.0",
+    "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/serve-static": "^3.0.0",
+    "@nestjs/swagger": "^6.2.6",
+    "@nestjs/typeorm": "^9.0.0",
+    "bcrypt": "^5.1.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "dotenv": "^16.0.0",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "pg": "^8.10.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0",
+    "sqlite3": "^5.1.7",
+    "swagger-ui-express": "^4.6.3",
+    "typeorm": "^0.3.17"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/multer": "^1.4.7",
+    "@types/node": "^18.0.0",
+    "@types/passport-jwt": "^3.0.6",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.0"
+  }
+}

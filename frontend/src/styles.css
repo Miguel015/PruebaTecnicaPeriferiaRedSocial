@@ -1,0 +1,93 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* small helpers and overrides */
+.app-bg{@apply bg-slate-50 text-slate-900}
+.container-max{max-width:768px}
+.card-ui{@apply bg-white p-6 rounded-xl shadow-sm}
+.muted{@apply text-slate-500}
+.btn-base{@apply inline-flex items-center gap-2 px-4 py-2 rounded-md text-white bg-emerald-600 hover:bg-emerald-700}
+.btn-muted{@apply inline-flex items-center gap-2 px-3 py-1 rounded-md bg-gray-100 text-gray-800}
+.msg-error{@apply bg-red-50 text-red-700 p-3 rounded-md}
+.msg-success{@apply bg-emerald-50 text-emerald-700 p-3 rounded-md}
+
+.posts-grid{@apply flex flex-col gap-6}
+.post-card{@apply bg-white rounded-lg overflow-hidden shadow-md}
+.post-img{width:100%;height:100%;object-fit:cover}
+
+/* Floating action button */
+.fab{@apply fixed right-6 bottom-6 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-white}
+.fab{background:linear-gradient(135deg,#16a34a 0%,#059669 100%);border:4px solid rgba(255,255,255,0.06)}
+.fab:before{content:'';position:absolute;inset:0;border-radius:9999px;box-shadow:0 12px 30px rgba(5,150,105,0.18)}
+.fab:hover{transform:translateY(-6px) scale(1.05);transition:transform .22s cubic-bezier(.2,.9,.3,1)}
+.fab:active{transform:translateY(-2px) scale(.98)}
+.fab-bounce{animation:fab-bounce 3.2s ease-in-out infinite}
+@keyframes fab-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* Modal backdrop / panel */
+.modal-backdrop{position:fixed;inset:0;background:linear-gradient(180deg, rgba(2,6,23,0.55), rgba(2,6,23,0.6));display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.modal-panel{background:linear-gradient(180deg,#ffffff,#f8fdf7);border-radius:14px;max-width:680px;width:100%;padding:1.25rem;box-shadow:0 20px 40px rgba(2,6,23,0.18);transform-origin:center;animation:modal-pop .28s cubic-bezier(.2,.9,.3,1)}
+@keyframes modal-pop{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.modal-title{font-size:1.05rem;font-weight:600}
+@keyframes modal-in{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* Heart animation */
+.heart-liked{color:#ef4444;transform:scale(1.2);transition:transform .18s ease,color .18s ease}
+.heart-btn{display:inline-flex;align-items:center;gap:.5rem}
+
+/* Carousel images stacked and faded */
+.carousel-wrap{position:relative;width:100%;height:100%}
+.carousel-item{position:absolute;inset:0;transition:opacity .28s ease,transform .28s ease;opacity:0;transform:scale(.995)}
+.carousel-item.visible{opacity:1;transform:scale(1)}
+.carousel-nav-btn{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:9999px;background:rgba(0,0,0,0.55);color:white;padding:0;border:none;box-shadow:0 8px 26px rgba(2,6,23,0.35);backdrop-filter:blur(4px);transition:transform .22s cubic-bezier(.2,.9,.3,1),box-shadow .18s;transform:translateY(-50%)}
+.carousel-nav-btn svg{display:block;width:24px;height:24px}
+/* Keep vertical centering when hovering by reapplying translateY(-50%) together with scale */
+.carousel-nav-btn:hover{transform:translateY(-50%) scale(1.06);box-shadow:0 18px 46px rgba(2,6,23,0.48)}
+.carousel-nav-btn{z-index:30}
+.carousel-dots{display:flex;gap:.35rem}
+.carousel-dot{width:.55rem;height:.55rem;border-radius:9999px;background:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.carousel-dot.active{background:white;box-shadow:0 2px 6px rgba(0,0,0,0.12)}
+
+/* Profile edit improvements */
+.card-ui{overflow:hidden}
+.profile-input{max-width:320px}
+
+/* small helpers */
+.text-muted{color:#64748b}
+
+/* Loader */
+.spinner{width:28px;height:28px;border:3px solid rgba(255,255,255,0.2);border-top-color:white;border-radius:9999px;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* subtle login animations */
+@keyframes fadeInLeft {from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeInUp {from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.animate-fade-in-left{animation:fadeInLeft .56s cubic-bezier(.2,.9,.3,1) both}
+.animate-fade-in-up{animation:fadeInUp .6s cubic-bezier(.2,.9,.3,1) both}
+.anim-delay-150{animation-delay:.15s}
+.anim-delay-300{animation-delay:.3s}
+
+/* Profile grid (instagram-like) */
+.profile-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+@media (max-width: 768px){.profile-gallery{grid-template-columns:repeat(2,1fr)}}
+@media (max-width: 480px){.profile-gallery{grid-template-columns:repeat(1,1fr)}}
+.profile-thumb{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden}
+.profile-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%, rgba(0,0,0,0.35) 100%);display:flex;align-items:flex-end;justify-content:flex-start;padding:8px;opacity:0;transition:opacity .18s ease,transform .18s ease}
+.profile-thumb:hover .thumb-overlay{opacity:1}
+.thumb-meta{display:inline-flex;align-items:center;gap:8px;background:rgba(0,0,0,0.45);padding:6px 8px;border-radius:999px;color:white;font-weight:600}
+.thumb-meta svg{width:18px;height:18px}
+
+/* Modal image column fix to be fully black and centered */
+.modal-panel .modal-image{background:#000;display:flex;align-items:center;justify-content:center}
+.modal-panel .modal-image img{max-height:82vh;object-fit:contain}
+/* ensure carousel images inside modal fill the area and use contain */
+.modal-gallery .carousel-item, .modal-image .carousel-item { width:100%; height:100%; }
+.modal-gallery .carousel-item img, .modal-image .carousel-item img { max-width:100%; max-height:100%; object-fit:contain; display:block }
+/* center absolutely positioned carousel items' content */
+.modal-gallery .carousel-item, .carousel-wrap .carousel-item { display:flex; align-items:center; justify-content:center }
+
+
